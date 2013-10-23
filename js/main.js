@@ -1,13 +1,12 @@
-var url = "http://95.154.250.152:3000/global-data?token=3b277a3d4852", delay = 5000;
 
+<<<<<<< HEAD
 function getData() {
     
     $.ajax(url, {
         complete: function() {
-            alert();
+            console.log("Complete");
         },
         success: function(data) {
-            alert();
             console.log(data);
             setTimeout(getData, delay);
         }
@@ -17,3 +16,5 @@ function getData() {
 $(document).ready(function(e) {
     getData();
 });
+=======
+>>>>>>> parent of b797aa7... Getting data from server (broken)

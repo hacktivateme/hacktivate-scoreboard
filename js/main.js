@@ -1,5 +1,4 @@
 
-<<<<<<< HEAD
 function getData() {
     
     $.ajax(url, {
@@ -16,5 +15,4 @@ function getData() {
 $(document).ready(function(e) {
     getData();
 });
-=======
->>>>>>> parent of b797aa7... Getting data from server (broken)
+

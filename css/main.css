@@ -98,8 +98,57 @@ textarea {
    ========================================================================== */
 
 
+html, body {
+    height: 100%;
+    background: #000000;
+    color: #dddddd;
+}
+
+.info-box {
+    position: absolute;
+    width: 48%;
+    top: 5%;
+    height: 90%;
+    min-height: 500px;
+}
+
+.info-box .inner {
+    width: 100%;
+    height: 100%;
+    max-width: 520px;
+}
+
+#player-scores {
+    left: 52%;
+}
 
 
+
+#twitter-feed {
+    left: 2%;
+}
+
+.twitter-timeline {
+    float: right;
+    display: block;
+}
+
+@media screen and (max-width: 650px) {
+    .info-box {
+        position: static;
+        width: auto;
+        height: auto;
+        height: 300px;
+    }
+    
+    .info-box .inner {
+        max-width: none;
+    }
+    
+    .twitter-timeline {
+        width: 100%;
+    }
+}
 
 
 

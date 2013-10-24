@@ -1,4 +1,4 @@
-var url = "http://95.154.250.152:3000/global-data?token=93a918c1f3cb", delay = 5000;
+var url = "http://95.154.250.152:3000/global-data?token=c90b2c9d5153", delay = 5000;
 
 function getData() {
     
@@ -11,10 +11,11 @@ function getData() {
             var parsed = JSON.parse(data);
             var players = parsed.players;
             //console.log(players);
-            $("#player-scores").html("");
+            $("#player-scores .inner").html("");
+            var hei = 100 / players.length + "%";
             for (var i in players) {
                 var player = players[i];
-                $("#player-scores").append("<div>" + player.name + ": " + player.score + "</div>");
+                $("#player-scores .inner").append("<div style='height: " + hei + "; background-color: #" + player.color + "'>" + player.name + ": " + player.score + "</div>");
             }
             
         }

@@ -107,9 +107,9 @@ html, body {
 .info-box {
     position: absolute;
     width: 48%;
-    top: 5%;
+    top: 2%;
     height: 90%;
-    min-height: 500px;
+    min-height: 550px;
 }
 
 .info-box .inner {
@@ -118,8 +118,61 @@ html, body {
     max-width: 520px;
 }
 
+.info-box .inner.right {
+    float: right;
+}
+
+.info-box .inner.right .head {
+    text-align: right;
+}
+
+.info-box .inner .head {
+    font-size: 2em;
+    line-height: 2em;
+    position: relative;
+    height: 10%;
+}
+.info-box .inner .head div {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+.info-box .inner .content {
+    height: 90%;
+    position: relative;
+}
+
+#player-scores .inner .content {
+    border-radius: 5px;
+    overflow: hidden;
+}
+
 #player-scores {
     left: 52%;
+}
+
+.score-box {
+    opacity: 0;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+}
+
+.score-box .name {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.score-box .score {
+    position: absolute;
+    right: 10px;
+    font-size: 1.5em;
+}
+
+.score-box.transit  {
+    transition: 1s;
 }
 
 
@@ -138,7 +191,11 @@ html, body {
         position: static;
         width: auto;
         height: auto;
-        height: 300px;
+        height: 550px;
+    }
+    
+    .info-box .head {
+        text-align: center !important;
     }
     
     .info-box .inner {

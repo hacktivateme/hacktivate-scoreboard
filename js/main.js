@@ -1,4 +1,4 @@
-var url = "http://95.154.250.152:3000/global-data?token=6adf7ee0fed4", delay = 5000;
+var url = "http://95.154.250.152:3000/global-data?token=80dbfb553851", delay = 1000;
 var savedPlayers = [];
 var gradientPrefix = getCssValuePrefix('backgroundImage',
                                        'linear-gradient(left, #fff, #fff)');
@@ -38,6 +38,7 @@ var Player = function() {
     this.interScore = "";
     this.height = 0;
     this.element = $("<div class='score-box' style='background-color: #" + this.color + "; height: " + this.height * 100 + "%;' ><div class='name'></div><div class='score'></div>");
+    this.elementHeight = 0;
     this.added = false;
     
     this.add = function() {
@@ -57,7 +58,7 @@ var Player = function() {
             this.score = score;
             this.interScore = score;
             this.element.children(".score").html(this.score);
-        } else {
+        } else if (this.score != score) {
             this.score = score;
             $(this).animate({interScore: score}, {duration: 1000, 
               step: function() {this.element.children(".score").html(Math.round(this.interScore)) }, 

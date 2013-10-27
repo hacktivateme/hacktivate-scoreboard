@@ -102,6 +102,7 @@ html, body {
     height: 100%;
     background: #000000;
     color: #dddddd;
+    font-family: Oswald, Arial, sans-serif;
 }
 
 .info-box {
@@ -161,6 +162,8 @@ html, body {
 
 .score-box .name {
     position: absolute;
+    color: #fff;
+    text-shadow: 0 0 5px #000000;
     left: 10px;
     top: 10px;
 }
@@ -168,7 +171,10 @@ html, body {
 .score-box .score {
     position: absolute;
     right: 10px;
-    font-size: 1.5em;
+    bottom: 10px;
+    font-size: 2em;
+    font-weight: bold;
+    color: rgba(200,200,200,.8);
 }
 
 .score-box.transit  {

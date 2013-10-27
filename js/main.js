@@ -1,26 +1,25 @@
-var url = "http://95.154.250.152:3000/global-data?token=80dbfb553851", delay = 1000;
+var url = "http://95.154.250.152:3000/global-data?token=80dbfb553851";
+var delay = 1000;
 var savedPlayers = [];
-var gradientPrefix = getCssValuePrefix('backgroundImage',
-                                       'linear-gradient(left, #fff, #fff)');
+var gradientPrefix = getCssValuePrefix('backgroundImage', 'linear-gradient(left, #fff, #fff)');
 
+//getCssValuePrefix function courtesy of Matt Coughin
 function getCssValuePrefix(name, value) {
     var prefixes = ['', '-o-', '-ms-', '-moz-', '-webkit-'];
 
-    // Create a temporary DOM object for testing
     var dom = document.createElement('div');
 
     for (var i = 0; i < prefixes.length; i++) {
-        // Attempt to set the style
         dom.style[name] = prefixes[i] + value;
 
-        // Detect if the style was successfully set
         if (dom.style[name]) {
             return prefixes[i];
         }
-        dom.style[name] = '';   // Reset the style
+        dom.style[name] = '';
     }
 }
 
+//colorLuminance function courtesy of Pimp Trizkit
 function colorLuminance(color, percent) {
     var num = parseInt(color,16),
     amt = Math.round(2.55 * percent),
@@ -30,15 +29,19 @@ function colorLuminance(color, percent) {
     return (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (B<255?B<1?0:B:255)*0x100 + (G<255?G<1?0:G:255)).toString(16).slice(1);
 }
 
+//Sorting function for Javascript's sort
+function sortFunction(a, b) {
+    return (b.score - a.score);
+}
 
+//Player object for handling animations and such
 var Player = function() {
     this.name = "";
-    this.color = "ffffff";
-    this.score = "";
-    this.interScore = "";
+    this.color = "";
+    this.score = 0;
+    this.interScore = 0;
     this.height = 0;
-    this.element = $("<div class='score-box' style='background-color: #" + this.color + "; height: " + this.height * 100 + "%;' ><div class='name'></div><div class='score'></div>");
-    this.elementHeight = 0;
+    this.element = $("<div class='score-box' style='height: " + this.height * 100 + "%;' ><div class='name'></div><div class='score'></div>");
     this.added = false;
     
     this.add = function() {
@@ -53,7 +56,6 @@ var Player = function() {
     }
     
     this.setScore = function(score) {
-        
         if (!this.added) {
             this.score = score;
             this.interScore = score;
@@ -64,13 +66,20 @@ var Player = function() {
               step: function() {this.element.children(".score").html(Math.round(this.interScore)) }, 
               callback: function() { this.element.children(".score").html(this.score) } 
             });
-        }
-            
+        }    
     }
     
     this.setColor = function(color) {
         if (this.color != color) {
+            var lum, col;
             this.color = color;
+            col = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.color);
+            lum = (parseInt(col[1], 16) / 255 * 2 + parseInt(col[2], 16) / 255 * 3 + parseInt(col[3], 16) / 255) / 6;
+            if (lum > .5) {
+                this.element.children(".score").css("color", "#111111");
+            } else {
+                this.element.children(".score").css("color", "#eeeeee");
+            }
             this.element.css("background-color", "#" + color);
             this.element.css("background-image", gradientPrefix + "linear-gradient(top,#" + colorLuminance(this.color, 10) + ",#" + colorLuminance(this.color, -10) + ")");
         }
@@ -87,64 +96,68 @@ var Player = function() {
     }
 }
 
-function getData() {
+//Function called when new score data is received
+function onData(data) {
+    var parsed = JSON.parse(data);
+    var players = parsed.players;
+    var addList = [];
+    var removeList = [];
+    var topper = 0;
+    var playerSort, player, i;
     
-    $.ajax(url, {
-        complete: function() {
-            //console.log("Complete");
-            setTimeout(getData, delay);
-        },
-        success: function(data) {
-            var parsed = JSON.parse(data);
-            var players = parsed.players;
-            
-            var addList = [];
-            var removeList = [];
-            
-            //Update player list (add new ones, remove old ones)
-            if (savedPlayers.length > players.length) {
-                for (var i = players.length; i < savedPlayers.length; i ++) {
-                    savedPlayers[i].remove();
-                }
-                savedPlayers.splice(players.length, savedPlayers.length - players.length);
-            } else if (players.length > savedPlayers.length) {
-                for (var i = savedPlayers.length; i < players.length; i ++) {
-                    var player = new Player();
-                    savedPlayers.push(player);
-                }
-            }
-            
-            //Put information in players
-            for (i in savedPlayers) {
-                var player = savedPlayers[i];
-                player.setHeight(1 / savedPlayers.length);
-                player.setColor(players[i].color);
-                player.setName(players[i].name);
-                player.setScore(players[i].score);
-                if (!player.added) {
-                    
-                    player.add();
-                    player.element.css("opacity", 1);
-                }
-            }
-            
-            //Sort in order of score
-            var playerSort = savedPlayers.slice(0, savedPlayers.length);
-            playerSort.sort(function(a, b) {
-                return (b.score - a.score);
-            });
-            
-            var topper = 0;
-            for (i in playerSort) {
-                var player = playerSort[i];
-                player.element.css("top", topper * 100 + "%");
-                topper += player.height;
-            }
-            
+    //Update player list (add new ones, remove old ones)
+    if (savedPlayers.length > players.length) {
+        for (i = players.length; i < savedPlayers.length; i ++) {
+            savedPlayers[i].remove();
         }
+        savedPlayers.splice(players.length, savedPlayers.length - players.length);
+    } else if (players.length > savedPlayers.length) {
+        for (i = savedPlayers.length; i < players.length; i ++) {
+            player = new Player();
+            savedPlayers.push(player);
+        }
+    }
+    
+    //Put information in players
+    for (i in savedPlayers) {
+        player = savedPlayers[i];
+        player.setHeight(1 / savedPlayers.length);
+        player.setColor(players[i].color);
+        player.setName(players[i].name);
+        player.setScore(players[i].score);
+        if (!player.added) {
+            
+            player.add();
+            player.element.css("opacity", 1);
+        }
+    }
+    
+    //Sort in order of score
+    var playerSort = savedPlayers.slice(0, savedPlayers.length);
+    playerSort.sort(sortFunction);
+    
+    var topper = 0;
+    for (i in playerSort) {
+        var player = playerSort[i];
+        player.element.css("top", topper * 100 + "%");
+        topper += player.height;
+    }
+}
+
+//Called at the completion of an ajax call (success or failure) to call again
+function onComplete() {
+    setTimeout(getData, delay)
+}
+
+//Handles the ajax call
+function getData() {
+    $.ajax(url, {
+        complete: onComplete,
+        success: onData
     });
 }
 
+//Sets everything in motion
 $(document).ready(function(e) {
     getData();
 });

@@ -174,14 +174,13 @@ html, body {
     bottom: 10px;
     font-size: 2em;
     font-weight: bold;
-    color: rgba(200,200,200,.8);
+    color: #dddddd;
+    opacity: 0.5;
 }
 
 .score-box.transit  {
     transition: 1s;
 }
-
-
 
 #twitter-feed {
     left: 2%;
@@ -212,19 +211,6 @@ html, body {
         width: 100%;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ==========================================================================
    Helper classes
    ========================================================================== */
